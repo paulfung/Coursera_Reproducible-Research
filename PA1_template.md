@@ -44,13 +44,15 @@ activityTotalSteps <- aggregate(x=activityWoNa$steps,
                                 FUN=sum)
 colnames(activityTotalSteps) <- c("date", "steps")
 library(lattice)
-histogram(activityTotalSteps$steps, main="Histogram of Steps Taken Each Day", 
-          xlab="total num of steps taken each day")
+histogram(activityTotalSteps$steps, type=c("count"),
+          main="Histogram of Total Num of Steps Taken Each Day", 
+          xlab="total num of steps taken each day",
+          ylab="num of days")
 ```
 
 ![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
-The mean and median are calculated as follow:
+The **mean** and **median** are calculated as follow:
 
 ```r
 mean(activityTotalSteps$steps)
@@ -84,13 +86,14 @@ activityFiveMinMean$time <- strptime(paste(activityFiveMinMean$interval%/%100,
 with(activityFiveMinMean,
      xyplot(steps ~ as.POSIXct(time), type="l", xlab="time",
             scales=list(x=list(at= seq(time[1], by="6 hour", length=5), 
-                               labels=format(seq(time[1], by="6 hour", length=5), "%HH"))))
+                               labels=format(seq(time[1], by="6 hour", length=5), "%HH"))),
+            main="Average Num of Steps Taken vs 5-Min Intervals")
 )
 ```
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
 
-To find out the 5 min interval that contains the largest number of steps:
+To find out the 5 min interval that contains the **maximum number of steps**:
 
 ```r
 maxStep <- max(activityFiveMinMean$steps)
@@ -116,7 +119,7 @@ sum(is.na(activity$steps)==TRUE)
 ## [1] 2304
 ```
 
-And now, we are going to fill them in. The strategy is to substitute them with their respective 5-minute interval across all days. The code to do this is as follow:
+And now, we are going to fill them in. **The strategy is to substitute them with their respective 5-minute interval across all days.** The code to do this is as follow:
 
 ```r
 # creating a named vector; this essentially works as a hashmap
@@ -139,13 +142,16 @@ Analysing on the resulting histogram:
 activityTotalSteps2 <- aggregate(x=activityFilled$steps, by=list(cut(activityFilled$date, 
                                                                      breaks="day")), FUN=sum)
 colnames(activityTotalSteps2) <- c("date", "steps")
-histogram(activityTotalSteps2$steps, main="Histogram of Steps Taken Each Day", 
-          xlab="total num of steps taken each day")
+histogram(activityTotalSteps2$steps, type=c("count"),
+          main=paste("Histogram of Total Num of Steps Taken Each Day\n",
+                     "(After Inputing Missing Values)"), 
+          xlab="total num of steps taken each day",
+          ylab="num of days")
 ```
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
 
-And the mean and median:
+And the **mean** and **median**:
 
 ```r
 mean(activityTotalSteps2$steps)
@@ -163,7 +169,7 @@ median(activityTotalSteps2$steps)
 ## [1] 10766
 ```
 
-We find that the frequencies around the mean increases, and that the mean and median are very close to their previous values.  These are expected because we are after all inputing the mean value of 5-minutes interval across all day, which in effect contributes to the daily mean in a more or less neutral manner.  And since now that the *NA* values are being substituted with neutral values, its occurances increases, making the mean containing bar even taller in its histogram.  This also, in effect, increases the chances of making the median same as the mean.
+We find that the frequencies around the mean increases, and that the mean and median are very close to their previous values.  These are expected because we are after all inputing the mean value of 5-minutes interval across all day, which in effect contributes to the daily mean in a more or less neutral manner.  And since now that the *NA* values are being substituted with neutral values, its occurances increases, making the mean containing bar even taller in its histogram.  This also, in effect, increases the chances of making the median the same as the mean.
 
 ## Differences in Activity Patterns between Weekdays and Weekends
 
@@ -185,7 +191,9 @@ activityDayType$time <- as.POSIXct(activityDayType$time)
 with(activityDayType, 
   xyplot(steps ~ time | day, type="l", layout=c(1,2),
          scales=list(x=list(at= seq(time[1], by="6 hour", length=5), 
-                            labels=format(seq(time[1], by="6 hour", length=5), "%HH"))))
+                            labels=format(seq(time[1], by="6 hour", length=5), "%HH"))),
+         main=paste("Comparison Between the Num of Steps Taken\n",
+                    "Per 5-Min Interval Across Wkdays and Wkends"))
 )
 ```
 
@@ -193,5 +201,5 @@ with(activityDayType,
 
 It is interesting to note the following points:
 * the number of steps peak at around the same time
-* the peak is higher on weekday than on weekend (indicates higher walking speed)
-* activity starts earlier on weekday
+* the peak is higher on weekdays than on weekends (indicates higher walking speed)
+* activity starts earlier on weekdays
