@@ -152,6 +152,6 @@ with(activityDayType,
 ```
 
 It is interesting to note the following points:
-* the number of steps peak at around the same time
-* the peak is higher on weekdays than on weekends (indicates higher walking speed)
-* activity starts earlier on weekdays
+* the number of steps reaches the maximum at around the same time for both weekday and weekend
+* the tallest peak on weekday is higher than that on weekend (indicates higher walking speed)
+* activity starts earlier on weekday than on weekend
